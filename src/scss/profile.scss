@@ -1,0 +1,36 @@
+.profile-container {
+    height: 100%;
+}
+
+.profile-content {
+    margin-top: 68px;
+    margin-bottom: 50px;
+    >.container {
+        padding: 8px;
+    }
+}
+
+.profile-pic-div {
+    position: relative;
+    >.profile-pic {
+        position: relative;
+        animation: 0.2s fadeInUp ease-out;
+        animation-fill-mode: forwards;
+    }
+}
+
+.profile-featurette {
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+
+.lead {
+    animation: 0.2s fadeInUp ease-out;
+    animation-fill-mode: forwards;
+}
+
+.login-form {
+    width: 100%;
+    animation: 0.2s fadeInUp ease-out;
+    animation-fill-mode: forwards;
+}

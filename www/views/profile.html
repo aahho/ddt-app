@@ -1,0 +1,51 @@
+<div class="profile-container">
+    <div class="profile-content">
+        <div class="jumbotron jumbotron-fluid bg-light profile-featurette">
+            <div class="container">
+                <div class="text-center profile-pic-div">
+                    <img class="profile-pic" ng-src="{{profile.img || 'img/logo.png'}}" height="100" width="100"/>
+                </div>
+                <p class="lead text-center mt-3">
+                    {{ profile.name || 'Duck Duck Tech' }}
+                </p>
+            </div>
+        </div>
+        <div class="container" ng-if="!isLoggedIn">
+            <div class="row pl-5 pr-5">
+                <form ng-if="!signWEmail" class="login-form">
+                    <div class="form-group">
+                        <label for="userEmail">Email address</label>
+                        <input type="email" class="form-control form-control-lg" id="userEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="userPwd">Password</label>
+                        <input type="password" class="form-control form-control-lg" id="userPwd" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+                </form>
+
+                <form ng-if="signWEmail" class="login-form">
+                    <div class="form-group">
+                        <label for="userName">Username</label>
+                        <input type="email" class="form-control form-control-lg" id="userName" aria-describedby="emailHelp" placeholder="Enter Username">
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email address</label>
+                        <input type="email" class="form-control form-control-lg" id="userEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                    </div>
+                    <div class="form-group">
+                        <label for="userPwd">Password</label>
+                        <input type="password" class="form-control form-control-lg" id="userPwd" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="userPwdAgain">Re-Password</label>
+                        <input type="password" class="form-control form-control-lg" id="userPwdAgain" placeholder="Re-Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">Sign Up</button>
+                </form>
+            </div>
+            <p ng-if="loginWEmail" class="text-center mt-3">No account? <a href="javascript:void(0);" ng-click="signUpForm()">Sign Up</a></p>
+            <p ng-if="signWEmail" class="text-center mt-3">Have an account? <a href="javascript:void(0);" ng-click="loginEmail()">Login</a></p>
+        </div>
+    </div>
+</div>

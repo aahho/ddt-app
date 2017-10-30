@@ -1,0 +1,53 @@
+<!doctype HTML>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
+        <title>Duck Duck Tech</title>
+        <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet">
+        <link rel="stylesheet" href="css/vendor.css"/>
+        <link rel="stylesheet" href="css/index.css"/>
+        <link rel="stylesheet" href="css/font-awesome.min.css"/>
+    </head>
+    <body>
+        <div id="appContainer" class="container">
+            <nav class="navbar navbar-light fixed-top bg-light">
+                <a href="javascript:void(0);" class="navbar-brand">
+                    <img src="img/logo.png" width="30" height="30" class="d-inline-block align-top" alt=""/>
+                </a>
+                <span class="app-title">Duck Duck Tech</span>
+            </nav>
+
+            <div class="content" ng-view></div>
+
+            <div class="bottom-tab" ng-controller="tabsController">
+                <a class="item" href="#!/feeds" ng-class="{'activeBtab' : getClass('/feeds')}">
+                    <i class="fa fa-home" aria-hidden="false"></i>
+                </a>
+                <!-- <div class="item">
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </div>
+                <div class="item">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </div>
+                <div class="item">
+                    <i class="fa fa-comment-o" aria-hidden="true"></i>
+                </div> -->
+                <div class="item" ng-click="featureRequest()">
+                    <i class="fa fa-feed" aria-hidden="false"></i>
+                </div>
+                <a class="item" href="#!/profile" ng-class="{'activeBtab' : getClass('/profile')}">
+                    <i class="fa fa-user-o" aria-hidden="false"></i>
+                </a>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/vendor.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+    </body>
+</html>

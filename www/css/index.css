@@ -1,3 +1,4 @@
+/** Color Variables **/
 html, body {
   height: 100%; }
 
@@ -7,6 +8,10 @@ html, body {
   position: absolute;
   left: 64px;
   font-weight: 500; }
+
+.duck-score {
+  height: 20px;
+  width: 20px; }
 
 .bg-app {
   background-color: #2D4452 !important;
@@ -38,7 +43,7 @@ html, body {
   bottom: 0px;
   left: 0px;
   right: 0px;
-  box-shadow: 0 0 10px 0px #dcdcdc;
+  box-shadow: 0 0 10px 0px gainsboro;
   background: #fff;
   z-index: 9; }
 
@@ -65,7 +70,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 28px;
   width: 28px; }
 
-.container {
+.app-container {
   padding: 0px;
   overflow-x: hidden;
   height: 100%;
@@ -181,8 +186,9 @@ h1, h2, h3, h4, h5, h6 {
   transition: width 0.5s ease-out; }
 
 .navbar {
+  z-index: 999;
   height: 60px;
-  box-shadow: 0 0 10px 0 #dcdcdc; }
+  box-shadow: 0 0 10px 0 gainsboro; }
 
 .loader-30 {
   height: 30px;
@@ -239,11 +245,35 @@ h1, h2, h3, h4, h5, h6 {
 .no-feeds {
   color: #999; }
 
+.pulse {
+  box-shadow: 0 0 0 0 #2D4452;
+  animation: pulse 2s infinite;
+  border-radius: 50%; }
+
+@-webkit-keyframes pulse {
+  0% {
+    -webkit-box-shadow: 0 0 0 0 inherit; }
+  70% {
+    -webkit-box-shadow: 0 0 0 10px inherit; }
+  100% {
+    -webkit-box-shadow: 0 0 0 0 inherit; } }
+
+@keyframes pulse {
+  0% {
+    -moz-box-shadow: 0 0 0 0 inherit;
+    box-shadow: 0 0 0 0 inherit; }
+  70% {
+    -moz-box-shadow: 0 0 0 10px inherit;
+    box-shadow: 0 0 0 10px inherit; }
+  100% {
+    -moz-box-shadow: 0 0 0 0 inherit;
+    box-shadow: 0 0 0 0 inherit; } }
+
 .profile-container {
   height: 100%; }
 
 .profile-content {
-  margin-top: 68px;
+  margin-top: 62px;
   margin-bottom: 50px; }
   .profile-content > .container {
     padding: 8px; }
@@ -267,3 +297,26 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   animation: 0.2s fadeInUp ease-out;
   animation-fill-mode: forwards; }
+
+.splash-screen {
+  position: fixed;
+  z-index: 1000;
+  height: 100vh;
+  width: 100vw;
+  background: #2d4452; }
+
+.splash-screen-inner {
+  position: relative;
+  height: inherit;
+  width: inherit; }
+
+.splash-duck {
+  height: 100px;
+  width: 100px; }
+
+.s-banner {
+  top: 40% !important;
+  width: 100%; }
+
+.splash-title {
+  color: #fff; }

@@ -7,12 +7,17 @@ html,body {
     position: absolute;
     left: 64px;
     font-weight: 500;
-    // color: #fff;
+    // color: $white;
+}
+
+.duck-score {
+    height: 20px;
+    width: 20px;
 }
 
 .bg-app {
-    background-color: #2D4452 !important;
-    color: #fff;
+    background-color: $primary !important;
+    color: $white;
 }
 
 .navbar-brand {
@@ -20,12 +25,12 @@ html,body {
 }
 
 .fa {
-    color: #777;
+    color: $grey;
 }
 
 .activeBtab {
     >i {
-        color: #007bff;
+        color: $info;
     }
 }
 
@@ -50,8 +55,8 @@ html,body {
     bottom: 0px;
     left: 0px;
     right: 0px;
-    box-shadow: 0 0 10px 0px #dcdcdc;
-    background: #fff;
+    box-shadow: 0 0 10px 0px gainsboro;
+    background: $white;
     z-index:9;
 }
 .bottom-tab>.item {
@@ -82,7 +87,7 @@ h1,h2,h3,h4,h5,h6 {
     width: 28px;
 }
 
-.container {
+.app-container {
     padding: 0px;
     overflow-x:hidden;
     height: 100%;
@@ -219,8 +224,9 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 .navbar {
+    z-index:999;
     height: 60px;
-    box-shadow: 0 0 10px 0 #dcdcdc;
+    box-shadow: 0 0 10px 0 gainsboro;
 }
 
 .loader-30 {
@@ -271,8 +277,8 @@ h1,h2,h3,h4,h5,h6 {
     top: 0px;
     left: 0px;
     border: 2px solid transparent;
-    border-top-color: #007bff;
-    border-bottom-color: #007bff;
+    border-top-color: $info;
+    border-bottom-color: $info;
     animation: rotation 0.8s infinite linear;
 }
 
@@ -295,5 +301,36 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 .no-feeds {
-    color: #999;
+    color: $light-grey;
+}
+
+.pulse {
+    box-shadow: 0 0 0 0 $primary;
+    animation: pulse 2s infinite;
+    border-radius: 50%;
+}
+@-webkit-keyframes pulse {
+    0% {
+        -webkit-box-shadow: 0 0 0 0 inherit;
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px inherit;
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 inherit;
+    }
+}
+@keyframes pulse {
+    0% {
+        -moz-box-shadow: 0 0 0 0 inherit;
+        box-shadow: 0 0 0 0 inherit;
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px inherit;
+        box-shadow: 0 0 0 10px inherit;
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 inherit;
+        box-shadow: 0 0 0 0 inherit;
+    }
 }

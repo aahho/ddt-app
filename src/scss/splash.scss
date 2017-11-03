@@ -1,0 +1,27 @@
+.splash-screen {
+    position: fixed;
+    z-index: 1000;
+    height: 100vh;
+    width: 100vw;
+    background: #2d4452;
+}
+
+.splash-screen-inner {
+    position: relative;
+    height: inherit;
+    width: inherit;
+}
+
+.splash-duck {
+    height: 100px;
+    width: 100px;
+}
+
+.s-banner {
+    top: 40% !important;
+    width: 100%;
+}
+
+.splash-title {
+    color: #fff;
+}

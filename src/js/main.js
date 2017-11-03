@@ -29,10 +29,20 @@ var app = {
     ]);
     DDT.config(["$compileProvider", "$routeProvider", function ($compileProvider, $routeProvider) {
         //$stateProvider, $urlRouterProvider
+
+        let redirectTo = function () {
+            var hideSplash = window.localStorage.getItem('showSplash');
+
+            return hideSplash? '/feeds': '/splash';
+            // return '/feeds';
+        };
         
         $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
 
         $routeProvider
+        .when('/splash', {
+            templateUrl: TEMPLATE_URL + 'splash.html'
+        })
         .when('/feeds', {
             templateUrl: TEMPLATE_URL + 'feed.html',
             controller: 'feedController'
@@ -42,25 +52,8 @@ var app = {
             controller: 'profileController'
         })
         .otherwise({
-            redirectTo: '/feeds'
+            redirectTo: redirectTo()
         })
-        
-        // $stateProvider
-        // .state("feeds",{
-        //     url: '/feeds',
-        //     templateUrl: TEMPLATE_URL + 'feed.html',
-        //     controller: 'feedController'
-        // })
-        // .state("profile", {
-        //     url: '/profile',
-        //     templateUrl: TEMPLATE_URL + 'profile.html',
-        //     controller: 'profileController'
-        // });
-
-        // $urlRouterProvider.otherwise(function ($injector) {
-        //     var $state = $injector.get("$state");
-        //     $state.go("feeds");
-        // });
     }]);
 
     DDT.factory("ddtServices", ["$http", "$q", function ($http, $q) {
@@ -101,8 +94,14 @@ var app = {
         }
     }]);
 
-    DDT.controller("feedController", ['$scope', '$location', '$timeout','ddtServices', function ($scope, $location, $timeout, ddtServices) {
+    DDT.controller("feedController", ['$window', '$scope', '$location', '$timeout','ddtServices', function ($window, $scope, $location, $timeout, ddtServices) {
         
+        let FEED_NEW = 'filter?item=10&page=1&news=latest';
+        let FEED_HOT = 'filter?item=10&page=1&news=hot';
+        let FEED_TOP = 'filter?item=10&page=1&news=top';
+
+        // $window.localStorage.hideSplash = true;
+
         $scope.feedsList = [];
         $scope.feedsListPagination = {};
         $scope.feedData = {};
@@ -119,7 +118,7 @@ var app = {
         $timeout(function () {
             console.log('Feed api called');
             ddtServices
-            .getFeedsList('filter?item=10&page=1')
+            .getFeedsList(FEED_TOP)
             .then(function (response) {
                 $scope.feedsList = response.data.data;
                 $scope.feedsListPagination = response.data.meta.pagination.links;
@@ -241,6 +240,15 @@ var app = {
                 }
             }
         });
+
+        $scope.getDuckScore = function (duckRank) {
+            console.log('duckrank = ', Math.round(duckRank/20));
+            var mArray = [];
+            for(var i = 0; i < Math.round(duckRank/20); i++ ) {
+                mArray.push(i);
+            }
+            return mArray;
+        };
     }]);
 
     DDT.controller("profileController", ['$scope', function ($scope) {

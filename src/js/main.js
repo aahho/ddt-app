@@ -11,6 +11,8 @@ var app = {
         angular.element(document).ready(function() {
             angular.bootstrap(document, ['duckducktech']);
         });
+
+        initAd();
     },
 
     disableBackButton: function (e) {
@@ -19,19 +21,80 @@ var app = {
     }
 };
 
+
+/********************* ADMOB Integration *********************** */
+//initialize the goodies 
+function initAd(){
+    if ( window.plugins && window.plugins.AdMob ) {
+        var ad_units = {
+            android : {
+                banner: 'ca-app-pub-0503054612740442/5621811907'		//PUT ADMOB ADCODE HERE 
+            },
+            web: {
+
+            },
+            ios: {
+                banner: 'ca-app-pub-0503054612740442/5621811907'
+            }
+        };
+        var admobid = ( /(android)/i.test(navigator.userAgent) ) ? ad_units.android : ad_units.ios;
+
+        window.plugins.AdMob.setOptions( {
+            publisherId: admobid.banner,
+            interstitialAdId: admobid.interstitial,
+            adSize: window.plugins.AdMob.AD_SIZE.SMART_BANNER,	//use SMART_BANNER, BANNER, LARGE_BANNER, IAB_MRECT, IAB_BANNER, IAB_LEADERBOARD 
+            bannerAtTop: false, // set to true, to put banner at top 
+            overlap: false, // banner will overlap webview  
+            offsetTopBar: false, // set to true to avoid ios7 status bar overlap 
+            isTesting: true, // receiving test ad 
+            autoShow: false // auto show interstitial ad when loaded 
+        });
+
+        registerAdEvents();
+
+    } else {
+        console.log( 'admob plugin not ready' ); 
+    }
+}
+
+function registerAdEvents() {
+    document.addEventListener('onReceiveAd', function(){});
+    document.addEventListener('onFailedToReceiveAd', function(data){});
+    document.addEventListener('onPresentAd', function(){});
+    document.addEventListener('onDismissAd', function(){ });
+    document.addEventListener('onLeaveToAd', function(){ });
+}
+
+function showBannerFunc(){
+    console.log('called showbanner func');
+    window.plugins.AdMob.createBannerView();
+}
+
+
+/*************************************************************** */
+
+function showToast(message) {
+    window.plugins.toast.showShortBottom(message);
+}
+
+
+/*************************************************************** */
+
 (function (window, angular) {
 
     var TEMPLATE_URL = "views/";
+    let APP_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfbmFtZSI6ImRkdCJ9.jybDUB8JHJ1rd1mGizFReZcL2aYJ8SIhP9O7tPhdcUw';
 
     var DDT = angular.module('duckducktech', [
         // 'ui.router'
-        'ngRoute'
+        'ngRoute',
+        'ngTagsInput'
     ]);
-    DDT.config(["$compileProvider", "$routeProvider", function ($compileProvider, $routeProvider) {
+    DDT.config(["$compileProvider", "$routeProvider", "$httpProvider", function ($compileProvider, $routeProvider, $httpProvider) {
         //$stateProvider, $urlRouterProvider
 
         let redirectTo = function () {
-            var hideSplash = window.localStorage.getItem('showSplash');
+            var hideSplash = window.localStorage.getItem('hideSplash');
 
             return hideSplash? '/feeds': '/splash';
             // return '/feeds';
@@ -51,14 +114,84 @@ var app = {
             templateUrl: TEMPLATE_URL + 'profile.html',
             controller: 'profileController'
         })
+        .when('/settings', {
+            templateUrl: TEMPLATE_URL + 'settings.html',
+            controller: 'settingsController'
+        })
+        .when('/saved', {
+            templateUrl: TEMPLATE_URL + 'saved_feeds.html',
+            controller: 'savedFeedController'
+        })
+        .when('/personal', {
+            templateUrl: TEMPLATE_URL + 'personal_feeds.html',
+            controller: 'personalFeedController'
+        })
         .otherwise({
             redirectTo: redirectTo()
-        })
+        });
+
+        $httpProvider.interceptors.push("interceptor");
+    }]);
+
+    DDT.run([ "$rootScope", "$window",
+        function ($rootScope, $window) {
+            $rootScope.$on('$routeChangeStart', function (event, next, current) {
+                console.log('route change', event, next, current);
+                if(next && next.$$route && next.$$route.originalPath !== '/splash') {
+                    try {
+                        window.plugins.AdMob.destroyBannerView();
+                    } catch(e) {
+                        console.log('admob error');
+                    }
+                    showBannerFunc();
+                }
+            });
+
+            $rootScope.hideSplashScreen = $window.localStorage.hideSplash;
+        }
+    ]);
+
+    DDT.factory("interceptor", ["$q", function ($q) {
+        return {
+            // optional method
+            'request': function(config) {
+                // do something on success
+                if(config && config.headers) {
+                    config.headers['app-token'] = APP_TOKEN;
+                }
+                return config;
+            },
+        
+            // optional method
+            'requestError': function(rejection) {
+                // do something on error
+                if (canRecover(rejection)) {
+                    return responseOrNewPromise
+                }
+                return $q.reject(rejection);
+            },
+        
+        
+            // optional method
+            'response': function(response) {
+                // do something on success
+                return response;
+            },
+        
+            // optional method
+            'responseError': function(rejection) {
+                // do something on error
+                if (canRecover(rejection)) {
+                    return responseOrNewPromise
+                }
+                return $q.reject(rejection);
+            }
+        }
     }]);
 
     DDT.factory("ddtServices", ["$http", "$q", function ($http, $q) {
 
-        var API_ENDPOINT = "http://127.0.0.1:5000/feeds/articles/";
+        var API_ENDPOINT = "http://127.0.0.1:5000/";
 
         var AJAX = function (URL, METHOD, DATA) {
             var deferred = $q.defer();
@@ -90,17 +223,42 @@ var app = {
                 var URL = url,
                     METHOD = 'GET';
                 return AJAX(URL, METHOD, undefined);
+            },
+            userSignup: function (entity) {
+                var URL = 'users/register'
+            },
+            googleLogin: function (entityId) {
+                var URL = 'users/google?token='+entityId;
+                var METHOD = 'GET';
+                return AJAX(URL, METHOD, undefined);
             }
         }
     }]);
 
+    DDT.controller("appController", ["$rootScope", "$scope", function ($rootScope, $scope) {
+        
+        $scope.showFilterSection = false;
+        $scope.keywordsInput = '';
+        
+        $scope.toggleFilters = function($event) {
+            $scope.showFilterSection = !$scope.showFilterSection;
+
+            if($scope.showFilterSection) {
+                //additional stuff
+            }
+        };
+    }]);
+
     DDT.controller("feedController", ['$window', '$scope', '$location', '$timeout','ddtServices', function ($window, $scope, $location, $timeout, ddtServices) {
         
-        let FEED_NEW = 'filter?item=10&page=1&news=latest';
-        let FEED_HOT = 'filter?item=10&page=1&news=hot';
-        let FEED_TOP = 'filter?item=10&page=1&news=top';
+        let FEED_NEW = 'feeds/articles/filter?item=10&page=1&d_min=0&d_max=1';
+        let FEED_HOT = 'feeds/articles/filter?item=10&page=1&d_min=0&d_max=2';
+        let FEED_TOP = 'feeds/articles/filter?item=10&page=1&d=0';
+        let FEED_TEMP = 'feeds/articles/filter?item=10&page=1&d_min=0&d_max=30';
 
-        // $window.localStorage.hideSplash = true;
+        $window.localStorage.hideSplash = true;
+
+        showBannerFunc();
 
         $scope.feedsList = [];
         $scope.feedsListPagination = {};
@@ -118,7 +276,7 @@ var app = {
         $timeout(function () {
             console.log('Feed api called');
             ddtServices
-            .getFeedsList(FEED_TOP)
+            .getFeedsList(FEED_TEMP)
             .then(function (response) {
                 $scope.feedsList = response.data.data;
                 $scope.feedsListPagination = response.data.meta.pagination.links;
@@ -129,13 +287,13 @@ var app = {
                 navigator.notification.alert('Error fetching feeds '+ rejection.status, function () {}, 'Error', 'OK');
                 $scope.loadingFeeds = false;
             });
-        }, 2000);
+        }, 100);
 
         var previousListItem = undefined;
         var articleCollapseHeight = undefined;
         var articleExpandedHeight = undefined;
         $scope.currentFeed = {};
-        var oldScrollTop = $('.feed-content').scrollTop();
+        var oldScrollTop = angular.element('.feed-content').scrollTop();
         $scope.getArticle = function (event, feed) {
             if(event.target.id === 'artLnk') {
                 // console.log(event.target);
@@ -149,6 +307,7 @@ var app = {
             //closing the article
             if(previousListItem && previousListItem.currentTarget == event.currentTarget) {
                 closeArticle(event, feed);
+                $scope.currentFeed = {};
             } //closing the old article and opening the new one 
             else if(previousListItem && previousListItem.currentTarget != event.currentTarget) {
                 closeArticle(previousListItem, feed, true);
@@ -163,16 +322,16 @@ var app = {
         };
 
         var openArticle = function (event, feed, otherScroll) {
-            var articleImg = $(event.currentTarget).find('.article-img');
-            var articleContent = $(event.currentTarget).find('.article-content');
-            var articleCol = $(event.currentTarget).find('.column');
+            var articleImg = angular.element(event.currentTarget).find('.article-img');
+            var articleContent = angular.element(event.currentTarget).find('.article-content');
+            var articleCol = angular.element(event.currentTarget).find('.column');
             
             if(!otherScroll) {
-                oldScrollTop = $('.feed-content').scrollTop();
+                oldScrollTop = angular.element('.feed-content').scrollTop();
             }
 
             ddtServices
-            .getArticle(feed.id)
+            .getArticle('feeds/articles/' + feed.id)
             .then(function (response) {
                 $scope.feedData[feed.id] = response.data.data;
             }, function (rejection) {
@@ -184,15 +343,15 @@ var app = {
             articleCol.addClass('margin-256');
             articleContent.removeClass('ng-hide').animate({}, 500);
             // console.log(articleImg);
-            $('.feed-content').animate({
-                scrollTop: -($('.feed-list-group').offset().top - $(event.currentTarget).position().top)
+            angular.element('.feed-content').animate({
+                scrollTop: -(angular.element('.feed-list-group').offset().top - angular.element(event.currentTarget).position().top)
             }, 200);
         };
 
         var closeArticle = function (event, feed, stopScroll) {
-            var articleImg = $(event.currentTarget).find('.article-img');
-            var articleCol = $(event.currentTarget).find('.column');
-            var articleContent = $(event.currentTarget).find('.article-content');
+            var articleImg = angular.element(event.currentTarget).find('.article-img');
+            var articleCol = angular.element(event.currentTarget).find('.column');
+            var articleContent = angular.element(event.currentTarget).find('.article-content');
 
             animateArticleImg(articleImg);
             articleContent.addClass('ng-hide');
@@ -202,11 +361,11 @@ var app = {
             $scope.currentFeed = {};
 
             if(!stopScroll) {
-                $('.feed-content').animate({
+                angular.element('.feed-content').animate({
                     scrollTop: oldScrollTop
                 }, 200);
             } else {
-                oldScrollTop = $('.feed-content').scrollTop() - $(event.currentTarget).innerHeight() - 113;
+                oldScrollTop = angular.element('.feed-content').scrollTop() - angular.element(event.currentTarget).innerHeight() - 113;
             }
         };
 
@@ -221,8 +380,8 @@ var app = {
         var isLoadingFeeds = false;
 
         angular.element('.feed-content').on('scroll', function() {
-            console.log('scroll ', $(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight);
-            if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            console.log('scroll ', angular.element(this).scrollTop() + angular.element(this).innerHeight() >= angular.element(this)[0].scrollHeight);
+            if(angular.element(this).scrollTop() + angular.element(this).innerHeight() >= angular.element(this)[0].scrollHeight) {
                 console.log('end reached', $scope.feedsListPagination.next_page);
                 if($scope.feedsListPagination.next_page && !isLoadingFeeds) {
                     console.log('api called');
@@ -232,7 +391,7 @@ var app = {
                         $timeout(function() {
                             $scope.feedsList = $scope.feedsList.concat(response.data.data);
                             isLoadingFeeds = false;
-                        }, 2000);
+                        }, 100);
                     }, function (reject) {
                         console.log('Error fetching feeds!');
                         isLoadingFeeds = false;
@@ -251,22 +410,79 @@ var app = {
         };
     }]);
 
-    DDT.controller("profileController", ['$scope', function ($scope) {
+    DDT.controller("profileController", ['$window', '$scope', 'ddtServices', function ($window, $scope, ddtServices) {
         //nothing here, go along!
-        $scope.profile = {};
+        $scope.profile = $window.localStorage.user ? $window.localStorage.user : {};
         $scope.loginWEmail = true;
         $scope.signWEmail = false;
         $scope.isLoggedIn = false;
 
-        $scope.loginEmail = function () {
-            $scope.signWEmail = false;
-            $scope.loginWEmail = true;
+        // $scope.loginEmail = function () {
+        //     $scope.profile = {};
+        //     $scope.signWEmail = false;
+        //     $scope.loginWEmail = true;
+        // };
+
+        // $scope.signUpForm = function () {
+        //     $scope.profile = {};
+        //     $scope.loginWEmail = false;
+        //     $scope.signWEmail = true;
+        // };
+
+        $scope.googleSignIn = function ($event) {
+            console.log('google sign in', $event, arguments);
+            var signInOptions = {
+                'scopes': 'profile email openid'
+            };
+            if(( /(android)/i.test(navigator.userAgent) ) ) {
+                signInOptions.webClientId = '211475890836-u1nlglvheakv7o16qtndh785udtv4942.apps.googleusercontent.com'; // optional clientId of your Web application from Credentials settings of your project - On Android, this MUST be included to get an idToken. On iOS, it is not required.
+                signInOptions.offline = true;
+            }
+            window.plugins.googleplus.login(
+                signInOptions,
+                function (obj) {
+                    // do something useful instead of alerting
+                    $scope.profile = obj; //email, idToken, serverAuthCode, userId, displayName, familyName, givenName, imageUrl
+                    
+                    $scope.isLoggedIn = true; //remove this later
+
+                    ddtServices.googleLogin(obj.idToken).then(function (response) {
+                        showToast('Logged in successfully');
+                        $window.localStorage.user = obj;
+                        $scope.isLoggedIn = true;
+                    }, function (rejection) {
+                        navigator.notification.alert('There was a server side error - '+ rejection.status, function () {}, 'Error', 'Close');
+                    });
+                },
+                function (msg) {
+                    // console.log('error: ' + msg);
+                    navigator.notification.alert('Error: ' + msg, function () {}, 'Google Sign In Error', 'Close');
+                    // showToast('There was an error :(');
+                }
+            );
         };
 
-        $scope.signUpForm = function () {
-            $scope.loginWEmail = false;
-            $scope.signWEmail = true;
-        };
+        // $scope.registerUser = function () {
+            
+        //     ddtServices.registerUser($scope.profile).then(function (response) {
+        //         showToast('Registered Successfully!');
+        //     }, function (rejection) {
+        //         navigator.notification.alert('Error: ' + rejection.status, function () {}, 'Registration Error', 'Close');
+        //     });
+        // };
+
+        // $scope.loginUser = function () {
+            
+        //     ddtServices.registerUser($scope.profile).then(function (response) {
+        //         showToast('Logged in Successfully!');
+        //     }, function (rejection) {
+        //         navigator.notification.alert('Error: ' + rejection.status, function () {}, 'Login Error', 'Close');
+        //     });
+        // };
+
+        // $scope.forgotPassword = function () {
+
+        // };
     }]);
 
     DDT.controller("tabsController", ['$scope', '$location', function ($scope, $location) {
@@ -280,7 +496,19 @@ var app = {
                 //feature is wanted!!
             }, 'Coming Soon', ['Yes', 'Not Really']);
         };
-    }])
+    }]);
+
+    DDT.controller("settingsController", ['$scope', '$location', function ($scope, $location) {
+        
+    }]);
+
+    DDT.controller("savedFeedController", ['$scope', '$location', function ($scope, $location) {
+        
+    }]);
+
+    DDT.controller("personalFeedController", ['$scope', '$location', function ($scope, $location) {
+        
+    }]);
 
     DDT.filter('momentAgo', [function () {
         return function (item) {
@@ -332,5 +560,5 @@ var app = {
                 ele.addClass(mclassName);
             }
         }
-    }])
+    }]);
 }(window, angular));

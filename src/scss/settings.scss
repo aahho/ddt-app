@@ -1,0 +1,73 @@
+.settings-container {
+    height: 100%;
+    overflow-y: auto;
+    * {
+        font-family: sans-serif !important;
+    }
+}
+
+.settings-content {
+    margin-top: $margin-top-content;
+    margin-bottom: 50px;
+    >.container {
+        padding: 8px;
+    }
+}
+
+.m-center-flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.filter {
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.filter-section {
+    position:fixed;
+    top: $margin-top-content - 2;
+    left: 0px;
+    max-height: 0px;
+    animation: 0.2s expandHeight ease-in;
+    animation-fill-mode: forwards;
+    width: 100%;
+    z-index: 1030;
+    background-color: #f8f9fa!important;
+    box-shadow: 0 3px 3px -2px rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14)
+}
+
+@keyframes expandHeight{
+    from {
+        max-height: 0px;
+    } to {
+        max-height: 1000px;
+    }
+}
+
+.m-tags-input {
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+    background-color: #fff;
+    .tags {
+        border: 0px !important;
+        box-shadow: 0px 0px 0px 0px transparent !important;
+        .tag-item {
+            border-radius: 20px;
+            background: #007bff;
+            color: #fff;
+            border: 1px solid #007bff;
+            .remove-button {
+                color: #fff;
+            }
+        }
+        .tag-item.selected {
+            background: #ff5c5c;
+            border: 1px solid #ff5c5c;
+        }
+    }
+}

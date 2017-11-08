@@ -5,11 +5,13 @@
 
                         <div class="column">
 
-
-                    <span class="badge badge-pill badger" animate-delay="{{$index}}">{{feed.keywords[0]}}</span>
+                                <div class="row feed-row m-0" ng-class="{'pt-3': currentFeed.id === feed.id}">
+                    <span class="badge badge-pill badger sansserif" animate-delay="{{$index}}">{{feed.keywords[0]}}</span>
+                    <i class="material-icons pull-right col-2 m-center-flex save-feed" ng-if="currentFeed.id === feed.id">bookmark_border</i>
+                </div>
                 <div class="article-title">
-                    <h5 class="mb-1" ng-hide="currentFeed.id == feed.id">{{feed.title}}</h5>
-                    <a id="artLnk" animate-delay="{{$index}}" ng-href="{{feed.url}}" target="_blank" ng-show="currentFeed.id == feed.id" class="mb-1">{{feed.title}}</a>
+                    <h5 class="mb-1 sansserif" ng-hide="currentFeed.id == feed.id">{{feed.title}}</h5>
+                    <a id="artLnk" animate-delay="{{$index}}" ng-href="{{feed.url}}" target="_blank" ng-show="currentFeed.id == feed.id" class="mb-1 sansserif">{{feed.title}}</a>
                     <div class="row ml-1 mb-1">
                         <svg ng-repeat="item in getDuckScore(feed.duckRank)" class="mr-1 pulse duck-score" enable-background="new 0 0 128 128" height="128px" id="Layer_1" version="1.1" viewBox="0 0 128 128" width="128px" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                             <g>
@@ -24,6 +26,7 @@
                     <i class="fa fa-clock-o" aria-hidden="true"></i> {{feed.publishedAt | momentAgo}}
                 </small>
                 <div class="article-content ng-hide">
+                    <div ng-if="!feedData[feed.id].summary" class="loader-48 loader-1 absolute-center"></div>
                     {{feedData[feed.id].summary}}
                 </div>
             </div>
@@ -38,6 +41,6 @@
     </div>
 
     <div class="fill-screen" ng-show="feedsList.length === 0 && !loadingFeeds">
-        <h5 class="absolute-center no-feeds">No Feeds :(</h5>
+        <h5 class="absolute-center no-feeds sansserif">No Feeds :(</h5>
     </div>
 </div>

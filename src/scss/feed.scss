@@ -2,8 +2,8 @@ html,body {
     height: 100%;
 }
 .app-title {
-    line-height: 60px;
-    font-size: 1.5rem;
+    line-height: $navbar-height;
+    font-size: 1.2rem;
     position: absolute;
     left: 64px;
     font-weight: 500;
@@ -34,6 +34,10 @@ html,body {
     }
 }
 
+.feed-row {
+    position: relative;
+}
+
 .feed-content {
     padding: 0px;
     height: 100%;
@@ -43,7 +47,7 @@ html,body {
 }
 
 .feed-list-group {
-    margin-top: 68px;
+    margin-top: $margin-top-content;
     margin-bottom: 50px;
 }
 
@@ -73,7 +77,15 @@ html,body {
 }
 
 h1,h2,h3,h4,h5,h6 {
-    font-family: 'ABeeZee', sans-serif !important;
+    font-family: 'Lora', serif !important;
+}
+
+.sansserif {
+    font-family: sans-serif !important;
+}
+
+.m-font {
+    font-family: 'Lora', serif !important;
 }
 
 .title-head {
@@ -95,14 +107,14 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 .content {
-    font-family: 'ABeeZee', sans-serif !important;
+    font-family: 'Lora', serif !important;
     height: 100%;
     overflow: hidden;
 }
 
-// .tag {
-//     padding: 8px 0px;
-// }
+.m-elevation-3 {
+    box-shadow: 0 3px 3px -2px rgba(0,0,0,.2), 0 3px 4px 0 rgba(0,0,0,.14), 0 1px 8px 0 rgba(0,0,0,.12)
+}
 
 .list-group-item {
     border: 0px;
@@ -225,8 +237,11 @@ h1,h2,h3,h4,h5,h6 {
 
 .navbar {
     z-index:999;
-    height: 60px;
-    box-shadow: 0 0 10px 0 gainsboro;
+    height: $navbar-height;
+    // box-shadow: 0 0 10px 0 gainsboro;
+    .material-icons {
+        font-size: 1.8rem;
+    }
 }
 
 .loader-30 {
@@ -333,4 +348,11 @@ h1,h2,h3,h4,h5,h6 {
         -moz-box-shadow: 0 0 0 0 inherit;
         box-shadow: 0 0 0 0 inherit;
     }
+}
+
+.save-feed {
+    right: 0px;
+    top: 20px;
+    position: absolute;
+    height: inherit;
 }

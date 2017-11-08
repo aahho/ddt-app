@@ -1,0 +1,15 @@
+.savedfeed-container {
+    height: 100%;
+    overflow-y: auto;
+    * {
+        font-family: sans-serif !important;
+    }
+}
+
+.savedfeed-content {
+    margin-top: $margin-top-content;
+    margin-bottom: 50px;
+    >.container {
+        padding: 8px;
+    }
+}

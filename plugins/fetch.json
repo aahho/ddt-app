@@ -22,5 +22,39 @@
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "cordova-plugin-admob-simple": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-admob-simple"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-admob-sdklibs": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-admob-sdklibs"
+    },
+    "is_top_level": false,
+    "variables": {}
+  },
+  "cordova-plugin-x-toast": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-x-toast"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-googleplus": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-googleplus@^5.1.1"
+    },
+    "is_top_level": true,
+    "variables": {
+      "REVERSED_CLIENT_ID": "com.googleusercontent.apps.211475890836-8nusjphacv678j7rh5624louee5q2c12"
+    }
   }
 }

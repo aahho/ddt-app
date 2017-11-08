@@ -34,7 +34,8 @@ function vendor() {
         gulpPaths.bc + 'bootstrap/dist/js/bootstrap.min.js',
         gulpPaths.bc + 'angular/angular.min.js',
         // gulpPaths.bc + 'angular-ui-router/release/angular-ui-router.min.js'
-        gulpPaths.bc + 'angular-route/angular-route.min.js'
+        gulpPaths.bc + 'angular-route/angular-route.min.js',
+        gulpPaths.bc + 'ng-tags-input/ng-tags-input.min.js'
     ])
     .pipe(concat('vendor.js'))
     .pipe(gulp.dest(gulpPaths.dist + 'js'));
@@ -54,10 +55,11 @@ function style() {
     return gulp.src([
         // Add css files from bower here
         // gulpPaths.bc + 'tether/dist/css/tether.min.css',
-        gulpPaths.bc + 'bootstrap/dist/css/bootstrap.min.css'
+        gulpPaths.bc + 'bootstrap/dist/css/bootstrap.min.css',
+        gulpPaths.bc + 'ng-tags-input/ng-tags-input.min.css',
         // gulpPaths.bc + 'components-font-awesome/css/font-awesome.min.css'
     ])
-    .pipe(rename('vendor.css'))
+    .pipe(concat('vendor.css'))
     .pipe(gulp.dest(gulpPaths.dist+'css'))
 }
 

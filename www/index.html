@@ -5,25 +5,49 @@
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height" />
         <title>Duck Duck Tech</title>
-        <link href="https://fonts.googleapis.com/css?family=ABeeZee" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="css/vendor.css"/>
         <link rel="stylesheet" href="css/index.css"/>
-        <link rel="stylesheet" href="css/font-awesome.min.css"/>
+        <!-- <link rel="stylesheet" href="css/font-awesome.min.css"/> -->
+
     </head>
     <body>
-        <div id="appContainer" class="app-container">
-            <nav class="navbar navbar-light fixed-top bg-light">
+        <div id="appContainer" class="app-container" ng-controller="appController">
+            <nav class="navbar navbar-light fixed-top bg-light m-elevation-3">
                 <a href="javascript:void(0);" class="navbar-brand">
                     <img src="img/logo.png" width="30" height="30" class="d-inline-block align-top" alt=""/>
                 </a>
                 <span class="app-title">Duck Duck Tech</span>
+                <span class="pull-right filter" ng-click="toggleFilters($event)">
+                    <i class="fa material-icons">filter_list</i>
+                </span>
             </nav>
+            <div class="filter-section p-2" ng-if="showFilterSection">
+                <form class="m-2">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="searchFeed"><i class="material-icons">search</i></span>
+                        <input type="text" class="form-control" placeholder="Search By Title or Url" aria-label="Search by Title or Url" aria-describedby="searchFeed">
+                    </div>
+                </form>
+                <div class="advanced-filters">
+                    <form class="m-2">
+                        <!-- <div class="input-group"> -->
+                            <!-- <span class="input-group-addon" id="searchFeed"><i class="material-icons">search</i></span> -->
+                            <!-- <input tagsinput type="text" class="form-control" placeholder="Search By Title or Url" aria-label="Search by Title or Url" aria-describedby="searchFeed"> -->
+                            <tags-input class="m-tags-input input-group bootstrap" ng-model="keywordsInput" maxTags="5" maxLength="25"></tags-input>
+                        <!-- </div> -->
+                    </form>
+                </div>
+                <button class="btn btn-primary btn-sm pull-right m-2">Apply</button>
+            </div>
 
             <div class="content" ng-view></div>
 
             <div class="bottom-tab" ng-controller="tabsController">
                 <a class="item" href="#!/feeds" ng-class="{'activeBtab' : getClass('/feeds')}">
-                    <i class="fa fa-home" aria-hidden="false"></i>
+                    <!-- <i class="fa fa-home" aria-hidden="false"></i> -->
+                    <i class="fa material-icons">home</i>
                 </a>
                 <!-- <div class="item">
                     <i class="fa fa-search" aria-hidden="true"></i>
@@ -34,11 +58,22 @@
                 <div class="item">
                     <i class="fa fa-comment-o" aria-hidden="true"></i>
                 </div> -->
-                <div class="item" ng-click="featureRequest()">
-                    <i class="fa fa-feed" aria-hidden="false"></i>
-                </div>
+                <a class="item" href="#!/personal" ng-class="{'activeBtab' : getClass('/personal')}">
+                    <!-- <i class="fa fa-user-o" aria-hidden="false"></i> -->
+                    <i class="fa material-icons">rss_feed</i>
+                </a>
+                <a class="item" href="#!/saved" ng-class="{'activeBtab' : getClass('/saved')}">
+                    <!-- <i class="fa fa-user-o" aria-hidden="false"></i> -->
+                    <i class="fa material-icons">bookmark</i>
+                </a>
                 <a class="item" href="#!/profile" ng-class="{'activeBtab' : getClass('/profile')}">
-                    <i class="fa fa-user-o" aria-hidden="false"></i>
+                    <!-- <i class="fa fa-user-o" aria-hidden="false"></i> -->
+                    <i class="fa material-icons">person</i>
+                </a>
+
+                <a class="item" href="#!/settings" ng-class="{'activeBtab' : getClass('/settings')}">
+                    <!-- <i class="fa fa-user-o" aria-hidden="false"></i> -->
+                    <i class="fa material-icons">menu</i>
                 </a>
             </div>
         </div>
